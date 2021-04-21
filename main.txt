@@ -1,0 +1,30 @@
+
+import numpy as np 
+from math import pi
+from standard_solver import solver
+
+""" Inputs """
+
+n = 10 # Number of thetas
+intial_theta = np.linspace(pi, -pi, n)
+B = 3
+
+
+
+
+""" Solve """
+
+results = solver()
+
+
+
+
+
+
+
+""" Testing Unit """
+
+if __name__ == "__main__":
+
+    print('Testing Funtion : \n\
+        input    output =')
