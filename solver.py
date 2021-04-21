@@ -7,7 +7,7 @@ def get_X(theta, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, X0):
     X_k_minus= np.zeros((N-1,3))
     X_k_minus[0] = X0
     for k in range (1,N-1):
-        U = get_U(theta_k= theta[k-1], wj= wj, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
+        U = get_U(theta_k= theta[k-1], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
         X_k_minus[k] = np.dot(U, X_k_minus[k-1])
     return X_k_minus
 
@@ -19,7 +19,7 @@ def get_Y(theta, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt):
     Y_k_plus= np.zeros((N+1,3))
     Y_k_plus[-1] = Yt
     for k in reversed(range(N-1)):
-        U = get_U(theta_k= theta[k], wj= wj, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
+        U = get_U(theta_k= theta[k], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
         Y_k_plus[k] = np.dot(Y_k_plus[k+1], U)
     return Y_k_plus
 

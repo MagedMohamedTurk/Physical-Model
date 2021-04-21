@@ -24,13 +24,13 @@ def get_J(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
 
     J = 0
    
-    for _, wj in enumerate(w):
+    for wj in w:
         J_wj = Yt
         for theta_k in theta:
-            J_wj = J_wj @ get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y, OMEGA_z)
+            J_wj = J_wj @ get_U(theta_k =theta_k, wj = wj, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
         J_wj = J_wj @ X0.T
         J += J_wj
-    J = (1/N) * J         
+    J = J/N        
 
     return J
 
@@ -64,12 +64,11 @@ if __name__ == "__main__":
     We shall start with test case parameters
     """
 
-    #n = 10 # Number of thetas
+
 
     B = 3
-    j = 10 # Assumed number of random w over [B, -B]
     T = 20*np.pi
-    N = 300 # Number of thetas
+    N = 300 # Number random frequencies wj over [B, -B]
     X0 = [0,0,1]
     Yt = [1,0,0]
 
@@ -93,13 +92,18 @@ if __name__ == "__main__":
     OMEGA_y = tools.convert_numpy(OMEGA_y)
     OMEGA_z = tools.convert_numpy(OMEGA_z)
 
+    #convert X0, Yt into numpy array (1X3 vectors)
     X0 = tools.convert_numpy(X0)
     Yt = tools.convert_numpy(Yt)
-   
 
-    intial_theta = np.zeros(N)
-    w = tools.get_w(B, j) # Pseudorandom wj
-    dt = T/N
+
+
+
+    w = tools.get_w(B, N) # Pseudorandom wj
+    n = 20 # assume number of thetas
+    dt= T/n 
+    intial_theta = np.zeros(n)
+
 
 
     

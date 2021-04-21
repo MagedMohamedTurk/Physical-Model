@@ -8,12 +8,11 @@ import tools
 We shall start with test case parameters
 """
 
-#n = 10 # Number of thetas
+
 
 B = 3
-j = 10 # Assumed number of random w over [B, -B]
-T = 20*pi
-N = 300 # Number of thetas
+T = 20*np.pi
+N = 300 # Number random frequencies wj over [B, -B]
 X0 = [0,0,1]
 Yt = [1,0,0]
 
@@ -43,17 +42,15 @@ Yt = tools.convert_numpy(Yt)
 
 
 
-intial_theta = np.zeros(N)
-w = tools.get_w(B, j) # Pseudorandom wj
-dt = T/N
 
-
+w = tools.get_w(B, N) # Pseudorandom wj
+n = 20 # assume number of thetas
+dt= T/n 
+intial_theta = np.zeros(n)
 
 """ Solve the iterative model  """
 
-results = standard_solver(theta = intial_theta, w= w, N= N, dt= dt, 
-                        OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,
-                        OMEGA_z = OMEGA_z )
+
 
 
 

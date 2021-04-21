@@ -3,14 +3,14 @@
 import random 
 import numpy as np 
 
-def get_w(B, j):
+def get_w(B, N):
 
     """ Get j unique random values for w over Bandwidth [-B, B]
     
     """
 
     
-    return np.random.uniform(-B,B,[j,1])
+    return np.random.uniform(-B,B,[N,1])
 
 
 def convert_numpy(array, dtype = 'float64'):
@@ -34,4 +34,4 @@ def convert_numpy(array, dtype = 'float64'):
 if __name__ == "__main__":
 
     print('Testing Funtion : get_w() \n\
-        input (B=3, j=10)   output =', get_w(3,20))
+        input (B=3, N=300)   output =', get_w(3,300))
