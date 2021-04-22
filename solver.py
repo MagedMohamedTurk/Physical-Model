@@ -1,34 +1,38 @@
 import numpy as np 
 from objective_function import get_J, get_U
 
-def get_X(theta, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, X0):
-    """ Calculate X, Y """
-
-    X_k_minus= np.zeros((N-1,3))
-    X_k_minus[0] = X0
-    for k in range (1,N-1):
-        U = get_U(theta_k= theta[k-1], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
-        X_k_minus[k] = np.dot(U, X_k_minus[k-1])
+def get_X(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, X0):
+    """ Calculate X, Y
+    k: index for theta """
+    X_k_minus = X0.T
+    for i in range (k):
+        U = get_U(theta_k= theta[i], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
+        X_k_minus = U @ X_k_minus
     return X_k_minus
 
 
 
-def get_Y(theta, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt):
-    """ Calculate X, Y """
-
-    Y_k_plus= np.zeros((N+1,3))
-    Y_k_plus[-1] = Yt
-    for k in reversed(range(N-1)):
-        U = get_U(theta_k= theta[k], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
-        Y_k_plus[k] = np.dot(Y_k_plus[k+1], U)
+def get_Y(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt):
+    """ Calculate X, Y 
+    k: index for theta"""
+    n = len(theta)
+    Y_k_plus = Yt
+    for i in reversed(range(n-k, n)):
+        U = get_U(theta_k= theta[n-i], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
+        Y_k_plus = Y_k_plus @ U
     return Y_k_plus
 
 
 
-def get_e():
+def get_e_k(theta, k, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
     """ Calculate e """
-    X, Y = get_X_Y()
-    return
+    
+    e =0
+    for count in range(N):
+        X_k = get_X(theta= theta, k= k, wj= w[count], N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, X0= X0)
+        Y_k = get_Y(theta= theta, k= k, wj= w[count], N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, Yt= Yt)
+        e += np.cross (X_k, Y_k)
+    return e
 
 
 def update_theta ():
@@ -67,20 +71,18 @@ def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z):
 
 if __name__ == "__main__":
 
-    print('Testing Funtion : get_X \n\
-        test case inputs    output =')
+    
     import tools
 
     """ Inputs 
     We shall start with test case parameters
     """
 
-    #n = 10 # Number of thetas
+
 
     B = 3
-    j = 10 # Assumed number of random w over [B, -B]
     T = 20*np.pi
-    N = 300 # Number of thetas
+    N = 300 # Number random frequencies wj over [B, -B]
     X0 = [0,0,1]
     Yt = [1,0,0]
 
@@ -104,13 +106,29 @@ if __name__ == "__main__":
     OMEGA_y = tools.convert_numpy(OMEGA_y)
     OMEGA_z = tools.convert_numpy(OMEGA_z)
 
+    #convert X0, Yt into numpy array (1X3 vectors)
     X0 = tools.convert_numpy(X0)
     Yt = tools.convert_numpy(Yt)
-   
 
-    intial_theta = np.zeros(N)
-    w = tools.get_w(B, j) # Pseudorandom wj
-    dt = T/N
 
-    print('function: get_x:',get_X(theta = intial_theta, wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0).shape)
-    print('function: get_y:',get_Y(theta = intial_theta, wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, Yt = Yt))
+
+
+    w = tools.get_w(B, N) # Pseudorandom wj
+    n = 20 # assume number of thetas
+    dt= T/n 
+    intial_theta = np.zeros(n)
+
+    print('Testing Funtion : X,Y \n\
+        test case inputs    output =')
+    print('for wj=', w[0])
+    print('function: get_x[3]:'\
+        ,get_X(theta = intial_theta, k =3, wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0))
+    print()
+    print()
+    print('function: get_y[3]:',get_Y(theta = intial_theta, k =3,  wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, Yt = Yt))
+
+
+    print('Testing Funtion : e \n\
+        test case inputs    output =')
+    print('function: get_e[3]:'\
+    ,get_e_k(theta = intial_theta, k =3, w = w, N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0, Yt= Yt))
