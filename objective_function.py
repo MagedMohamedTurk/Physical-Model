@@ -1,4 +1,5 @@
 import numpy as np 
+from scipy.linalg import expm
 def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z, dtype = 'float64'):
     """ Calculate U
     theta_k = theta element
@@ -9,7 +10,7 @@ def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z, dtype = 'float64'):
     U = np.zeros((3,3), dtype=dtype_)
     
     
-    U = np.exp(dt * ( wj * OMEGA_z +
+    U = expm(dt * ( wj * OMEGA_z +
                             np.cos(theta_k) * OMEGA_x +
                             np.sin(theta_k) * OMEGA_y
                             )
@@ -109,6 +110,8 @@ if __name__ == "__main__":
     
     U = get_U(theta_k= intial_theta[0], wj = w[0], dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y ,OMEGA_z = OMEGA_z)
     print(U)
+    print()
+    print('for wj = ', w[0], '\ntheta =', intial_theta[0])
 
 
     print()
