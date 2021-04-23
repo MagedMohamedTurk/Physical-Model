@@ -1,13 +1,12 @@
 import numpy as np 
 from scipy.linalg import expm
-def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z, dtype = 'float64'):
+def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z):
     """ Calculate U
     theta_k = theta element
     wj = w element
     dt = time interval
     OMEGA_x, OMEGA_y, OMEGA_z = ..................... """
-    dtype_ = np.dtype(dtype)
-    U = np.zeros((3,3), dtype=dtype_)
+    U = np.zeros((3,3))
     
     
     U = expm(dt * ( wj * OMEGA_z +
@@ -109,9 +108,10 @@ if __name__ == "__main__":
 
     
     U = get_U(theta_k= intial_theta[0], wj = w[0], dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y ,OMEGA_z = OMEGA_z)
-    print(U)
-    print()
     print('for wj = ', w[0], '\ntheta =', intial_theta[0])
+    print(U)
+    print('Testing Det(Udag * U) = ', np.linalg.det(np.conjugate(U).T @ U))
+    
 
 
     print()

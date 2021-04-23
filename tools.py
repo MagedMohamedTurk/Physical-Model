@@ -1,6 +1,6 @@
 
 
-import random 
+
 import numpy as np 
 
 def get_w(B, N):
@@ -8,9 +8,9 @@ def get_w(B, N):
     """ Get j unique random values for w over Bandwidth [-B, B]
     
     """
-
+    w = np.random.uniform(-B,B,[N,1])
     
-    return np.random.uniform(-B,B,[N,1])
+    return w
 
 
 def convert_numpy(array, dtype = 'float64'):
