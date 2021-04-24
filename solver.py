@@ -2,6 +2,10 @@ import numpy as np
 from objective_function import get_J, get_U
 import time
 
+
+
+
+
 def get_X(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, X0):
     """ Calculate X, Y
     k: index for theta """
@@ -13,15 +17,20 @@ def get_X(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, X0):
 
 
 
+
+
 def get_Y(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt):
     """ Calculate X, Y 
     k: index for theta"""
     n = len(theta)
     Y_k_plus = Yt
-    for i in range(k+1, n):
+    for i in reversed(range(k+1, n)):
         U = get_U(theta_k= theta[i], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
         Y_k_plus = Y_k_plus @ U
     return Y_k_plus
+
+
+
 
 
 
@@ -36,6 +45,8 @@ def get_e_k(theta, k, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
     return e
 
 
+
+
 def update_theta (theta, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
     """ update theta """
     theta_updated = np.zeros(n)
@@ -43,6 +54,10 @@ def update_theta (theta, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
         e = get_e_k(theta, k = count, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, Yt= Yt, X0= X0)
         theta_updated[count] = np.arctan (e[1] / e[0]) 
     return theta_updated
+
+
+
+
 
 
 def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
@@ -58,7 +73,7 @@ def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     J = get_J(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0=X0, Yt= Yt)
     print('Trial #0: J=', J)
     iter_n = 0
-    while (J < 0.999) | (float(iter_n) < 1000):
+    while (J < 0.999) | ((iter_n) < 1000):
         start_time = time.time()
         theta = update_theta(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt)
         J = get_J(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0=X0, Yt= Yt)
@@ -140,7 +155,7 @@ if __name__ == "__main__":
     print()
     print('function: get_y[3]:',get_Y(theta = intial_theta, k =3,  wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, Yt = Yt))
 
-
+  
     print('Testing Funtion : get_e_k() \n\
         test case inputs    output =')
     print('function: get_e[3]:'\
@@ -155,18 +170,18 @@ if __name__ == "__main__":
     ,  update_theta (intial_theta, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0))
        
 
-
-   """
+    
+   
     print('Testing Funtion : standard_solver() \n\
         test case inputs    output =')
     print('function: update_theta(intial_theta):'\
     ,  standard_solver(theta= intial_theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt))
    
 
-
-
-
     """
+
+
+    
     print('choosing theta[10]')
     J_equ4 = 0
     for wj in w:
@@ -177,4 +192,3 @@ if __name__ == "__main__":
     J_equ4 = 1/N * J_equ4
     J = get_J(theta = intial_theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt) 
     print('calculating J from equ.3 = ' ,J, '\ncalculating J from equ.4= ', J_equ4)
-    """

@@ -1,5 +1,11 @@
 import numpy as np 
 from scipy.linalg import expm
+from functools import cache
+
+
+
+
+
 def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z):
     """ Calculate U
     theta_k = theta element
@@ -17,23 +23,25 @@ def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z):
 
     return U
 
+vector_U = np.vectorize(get_U, signature= '(),(),(),(n,n),(n,n),(n,n)->(n,n)')
+
+
+
+
+
+
+
+
+
 
 
 def get_J(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     """ Calculate J """
-
-    J = 0
-   
-    for wj in w:
-        J_wj = Yt
-        for theta_k in theta:
-            J_wj = J_wj @ get_U(theta_k =theta_k, wj = wj, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
-        J_wj = J_wj @ X0.T
-        J += J_wj
-    J = J/N        
+ 
+    J = sum(Yt @ np.prod(vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z), axis=1) @ X0) / N
+            
 
     return J
-
 
 
 
@@ -105,13 +113,13 @@ if __name__ == "__main__":
     intial_theta = np.zeros(n)
 
 
-
+    """
     
     U = get_U(theta_k= intial_theta[0], wj = w[0], dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y ,OMEGA_z = OMEGA_z)
     print('for wj = ', w[0], '\ntheta =', intial_theta[0])
     print(U)
     print('Testing Det(Udag * U) = ', np.linalg.det(np.conjugate(U).T @ U))
-    
+    """
 
 
     print()
