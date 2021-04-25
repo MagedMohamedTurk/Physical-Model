@@ -38,14 +38,16 @@ def get_e_k(theta, k, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
 
 def update_theta (theta, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
     """ update theta """
+    n = len(theta)
     theta_updated = np.zeros(n)
     for count in range(n):
         e = get_e_k(theta, k = count, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, Yt= Yt, X0= X0)
+        np.seterr(divide='ignore')
         theta_updated[count] = np.arctan (e[1] / e[0]) 
     return theta_updated
 
 
-def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
+def standard_solver(intial_theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     """ Solving the model
     theta = list(n) of theta values
     w = list(j) of wj
@@ -160,12 +162,12 @@ if __name__ == "__main__":
        
 
 
-   
+    """
     print('Testing Funtion : standard_solver() \n\
         test case inputs    output =')
     print('function: update_theta(intial_theta):'\
-    ,  standard_solver(theta= intial_theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt))
-   
+    ,  standard_solver(intial_theta = intial_theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt))
+    """
 
 
 
