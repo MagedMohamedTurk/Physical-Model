@@ -130,22 +130,26 @@ if __name__ == "__main__":
 
 
 
-    """
+    
     print('Testing Funtion : get_X, get_Y \n\
         test case inputs    output =')
     print('for wj=', w[0])
+    X = get_X(theta = intial_theta, k =3, wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0)
     print('function: get_x[3]:'\
-        ,get_X(theta = intial_theta, k =3, wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0))
+        ,X)
     print()
     print()
-    print('function: get_y[3]:',get_Y(theta = intial_theta, k =3,  wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, Yt = Yt))
+    Y = get_Y(theta = intial_theta, k =3,  wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, Yt = Yt)
+    print('function: get_y[3]:',Y)
+    print('norm (x[3]) = ', np.linalg.norm(X))
+    print('norm (y[3]) = ', np.linalg.norm(Y))
 
 
     print('Testing Funtion : get_e_k() \n\
         test case inputs    output =')
     print('function: get_e[3]:'\
     ,get_e_k(theta = intial_theta, k = 3, w = w, N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0, Yt= Yt))
-
+    """
 
     
     print('Testing Funtion : update_theta() \n\
@@ -156,7 +160,7 @@ if __name__ == "__main__":
        
 
 
-   """
+   
     print('Testing Funtion : standard_solver() \n\
         test case inputs    output =')
     print('function: update_theta(intial_theta):'\
@@ -166,7 +170,7 @@ if __name__ == "__main__":
 
 
 
-    """
+    
     print('choosing theta[10]')
     J_equ4 = 0
     for wj in w:
