@@ -10,7 +10,9 @@ import functools
 
 def np_multi_matmul(tensor: np.ndarray, axis: int) -> np.ndarray:
     arrays = np.split(tensor, tensor.shape[axis], axis = axis)
-    return functools.reduce(lambda x, y: np.matmul(y, x), arrays)
+    multi_mat = functools.reduce(lambda x, y: np.matmul(y, x), arrays)
+    
+    return multi_mat
 
 
 
