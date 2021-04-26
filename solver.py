@@ -1,6 +1,7 @@
 import numpy as np 
 from objective_function import get_J, get_U, vector_U
 import time
+import tools
 
 
 
@@ -9,7 +10,8 @@ import time
 def get_X(tensor_U, k, X0):
     """ Calculate X, Y
     k: index for theta """
-    X = X0 @ np.prod(tensor_U[:, 0:k:-1, :, :], axis=1)  # slice tesnor U from 0 to k-1
+    tensor_U_k = tensor_U[:, :k:-1, :, :]
+    X = X0 @ tools.np_multi_matmul(tensor_U_k, axis=1)  # slice tesnor U from 0 to k-1
     return X
 
 
@@ -19,7 +21,7 @@ def get_X(tensor_U, k, X0):
 def get_Y(tensor_U, k, Yt):
     """ Calculate X, Y 
     k: index for theta"""
-    Y = Yt @ np.prod(tensor_U[:, -1:k:-1,:,:], axis=1) # slice tesnor U from 0 to k-1
+    Y = Yt @ tools.np_multi_matmul(tensor_U[:, -1:k:-1,:,:], axis=1) # slice tesnor U from 0 to k-1
     return Y
 
 
@@ -40,7 +42,7 @@ def get_e_k(tensor_U, k, Yt, X0):
 
 def update_theta (tensor_U, theta, k, Yt, X0):
     """ update theta """
-    theta_updated = np.zeros(theat.shape)
+    theta_updated = np.zeros(theta.shape)
     for count in range(len(theta)):
         e= get_e_k(tensor_U = tensor_U, k= k, Yt= Yt, X0= X0)
         theta_updated[count] = np.arctan (e[1] / e[0]) 
@@ -66,13 +68,13 @@ def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     theta = intial_theta
 
     tensor_U = vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
-    J = sum(Yt @ np.prod(tensor_U, axis=1) @ X0) / N
+    J = sum(Yt @ tools.np_multi_matmul(tensor_U, axis=1) @ X0) / N
     print('Trial #0: J=', J)
     iter_n = 0
     while (J < 0.999) | ((iter_n) < 1000):
         start_time = time.time()
-        theta = update_theta(tensor_U, Y= Yt, X= X0)
-        J = get_J(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0=X0, Yt= Yt)
+        theta = update_theta(tensor_U, theta,  Yt= Yt, X0= X0)
+        J = sum(Yt @ tools.np_multi_matmul(tensor_U, axis=1) @ X0) / N
         iter_n += 1
         print('Trial #',iter_n,': J=', J,'          in ', round(time.time()-start_time, 2), 'seconds\n')
 
@@ -147,6 +149,7 @@ if __name__ == "__main__":
     print('for wj=', w[0])
     X = get_X(tensor_U, k=3, X0 = X0)
     print('function: get_x[3]:', X[0], 'norm(X)=', np.linalg.norm(X[0]))
+    
     print()
     print()
     Y= get_Y(tensor_U, k=3, Yt = Yt)
