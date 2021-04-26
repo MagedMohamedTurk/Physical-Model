@@ -32,8 +32,8 @@ def get_Y(tensor_U, k, Yt):
 def get_e_k(tensor_U, k, Yt, X0):
     """ Calculate e """
 
-    X_k = get_Y(tensor_U, k, Yt)
-    Y_k = get_Y(tensor_U, k, Yt)
+    X_k = get_X(tensor_U = tensor_U, k= k, X0= X0)
+    Y_k = get_Y(tensor_U = tensor_U, k= k, Yt= Yt)
     e = sum(np.cross (X_k, Y_k))
     return e
 
@@ -154,13 +154,13 @@ if __name__ == "__main__":
     print()
     Y= get_Y(tensor_U, k=3, Yt = Yt)
     print('function: get_y[3]:', Y[0], 'norm(Y)=', np.linalg.norm(Y[0]))
-    """
+    
   
     print('Testing Funtion : get_e_k() \n\
         test case inputs    output =')
     print('function: get_e[3]:'\
-    ,get_e_k(theta = intial_theta, k = 3, w = w, N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0, Yt= Yt))
-
+    ,get_e_k(tensor_U= tensor_U, k=3, Yt= Yt, X0= X0))
+    """
 
     
     print('Testing Funtion : update_theta() \n\
