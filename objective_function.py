@@ -113,15 +113,15 @@ if __name__ == "__main__":
     intial_theta = np.zeros(n)
 
 
-    """
+    
     
     U = get_U(theta_k= intial_theta[0], wj = w[0], dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y ,OMEGA_z = OMEGA_z)
     print('for wj = ', w[0], '\ntheta =', intial_theta[0])
     print(U)
     print('Testing Det(Udag * U) = ', np.linalg.det(np.conjugate(U).T @ U))
-    """
-
-
+    
+    print('shape of tesnor_U', vector_U(theta_k =intial_theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z).shape)
+  
     print()
     print()
     print('testing: J')

@@ -1,57 +1,48 @@
 import numpy as np 
-from objective_function import get_J, get_U
+from objective_function import get_J, get_U, vector_U
 import time
 
 
 
 
 
-def get_X(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, X0):
+def get_X(tensor_U, k, X0):
     """ Calculate X, Y
     k: index for theta """
-    X_k_minus = X0.T
-    for i in range (k):
-        U = get_U(theta_k= theta[i], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
-        X_k_minus = U @ X_k_minus
-    return X_k_minus
+    X = X0 @ np.prod(tensor_U[:, 0:k:-1, :, :], axis=1)  # slice tesnor U from 0 to k-1
+    return X
 
 
 
 
 
-def get_Y(theta, k, wj, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt):
+def get_Y(tensor_U, k, Yt):
     """ Calculate X, Y 
     k: index for theta"""
-    n = len(theta)
-    Y_k_plus = Yt
-    for i in reversed(range(k+1, n)):
-        U = get_U(theta_k= theta[i], wj= wj, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z)
-        Y_k_plus = Y_k_plus @ U
-    return Y_k_plus
+    Y = Yt @ np.prod(tensor_U[:, -1:k:-1,:,:], axis=1) # slice tesnor U from 0 to k-1
+    return Y
 
 
 
 
 
 
-def get_e_k(theta, k, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
+def get_e_k(tensor_U, k, Yt, X0):
     """ Calculate e """
-    
-    e = 0
-    for wj in w:
-        X_k = get_X(theta= theta, k= k, wj= wj, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, X0= X0)
-        Y_k = get_Y(theta= theta, k= k, wj= wj, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, Yt= Yt)
-        e += np.cross (X_k, Y_k)
+
+    X_k = get_Y(tensor_U, k, Yt)
+    Y_k = get_Y(tensor_U, k, Yt)
+    e = sum(np.cross (X_k, Y_k))
     return e
 
 
 
 
-def update_theta (theta, w, N, dt, OMEGA_x, OMEGA_y,OMEGA_z, Yt, X0):
+def update_theta (tensor_U, theta, k, Yt, X0):
     """ update theta """
-    theta_updated = np.zeros(n)
-    for count in range(n):
-        e = get_e_k(theta, k = count, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y,OMEGA_z= OMEGA_z, Yt= Yt, X0= X0)
+    theta_updated = np.zeros(theat.shape)
+    for count in range(len(theta)):
+        e= get_e_k(tensor_U = tensor_U, k= k, Yt= Yt, X0= X0)
         theta_updated[count] = np.arctan (e[1] / e[0]) 
     return theta_updated
 
@@ -69,13 +60,18 @@ def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     OMEGA_x, OMEGA_y, OMEGA_z = .....................
     """
     
+
+    
+
     theta = intial_theta
-    J = get_J(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0=X0, Yt= Yt)
+
+    tensor_U = vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
+    J = sum(Yt @ np.prod(tensor_U, axis=1) @ X0) / N
     print('Trial #0: J=', J)
     iter_n = 0
     while (J < 0.999) | ((iter_n) < 1000):
         start_time = time.time()
-        theta = update_theta(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt)
+        theta = update_theta(tensor_U, Y= Yt, X= X0)
         J = get_J(theta = theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0=X0, Yt= Yt)
         iter_n += 1
         print('Trial #',iter_n,': J=', J,'          in ', round(time.time()-start_time, 2), 'seconds\n')
@@ -142,19 +138,20 @@ if __name__ == "__main__":
     n = 20 # assume number of thetas
     dt= T/n 
     intial_theta = np.zeros(n)
+    tensor_U = vector_U(theta_k =intial_theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
 
 
-
-    """
+      
     print('Testing Funtion : get_X, get_Y \n\
         test case inputs    output =')
     print('for wj=', w[0])
-    print('function: get_x[3]:'\
-        ,get_X(theta = intial_theta, k =3, wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, X0 = X0))
+    X = get_X(tensor_U, k=3, X0 = X0)
+    print('function: get_x[3]:', X[0], 'norm(X)=', np.linalg.norm(X[0]))
     print()
     print()
-    print('function: get_y[3]:',get_Y(theta = intial_theta, k =3,  wj= w[0], N = N, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y,OMEGA_z = OMEGA_z, Yt = Yt))
-
+    Y= get_Y(tensor_U, k=3, Yt = Yt)
+    print('function: get_y[3]:', Y[0], 'norm(Y)=', np.linalg.norm(Y[0]))
+    """
   
     print('Testing Funtion : get_e_k() \n\
         test case inputs    output =')
@@ -178,7 +175,7 @@ if __name__ == "__main__":
     ,  standard_solver(theta= intial_theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt))
    
 
-    """
+ 
 
 
     
@@ -192,3 +189,4 @@ if __name__ == "__main__":
     J_equ4 = 1/N * J_equ4
     J = get_J(theta = intial_theta, w= w, N= N, dt= dt, OMEGA_x= OMEGA_x, OMEGA_y= OMEGA_y, OMEGA_z= OMEGA_z, X0= X0, Yt= Yt) 
     print('calculating J from equ.3 = ' ,J, '\ncalculating J from equ.4= ', J_equ4)
+    """
