@@ -2,6 +2,20 @@
 
 
 import numpy as np 
+import functools
+
+
+
+
+
+def np_multi_matmul(tensor: np.ndarray, axis: int) -> np.ndarray:
+    arrays = np.split(tensor, tensor.shape[axis], axis = axis)
+    return functools.reduce(lambda x, y: np.matmul(y, x), arrays)
+
+
+
+
+
 
 def get_w(B, N):
 

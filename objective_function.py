@@ -1,6 +1,6 @@
 import numpy as np 
 from scipy.linalg import expm
-from functools import cache
+import tools
 
 
 
@@ -38,10 +38,10 @@ vector_U = np.vectorize(get_U, signature= '(),(),(),(n,n),(n,n),(n,n)->(n,n)')
 def get_J(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     """ Calculate J """
  
-    J = sum(Yt @ np.prod(vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z), axis=1) @ X0) / N
+    J = sum(Yt @ tools.np_multi_matmul(vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z), axis=1) @ X0) / N
             
 
-    return J
+    return J[0]
 
 
 
