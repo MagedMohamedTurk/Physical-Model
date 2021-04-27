@@ -1,14 +1,22 @@
+""" The module contains some adding functions
+Running this file will run the 'Testing Unit` to test functions"""
 
 
 
+
+#Import Modules
 import numpy as np 
 import functools
 
 
 
 
+# Define assisting functions
+
 
 def np_multi_matmul(tensor: np.ndarray, axis: int) -> np.ndarray:
+    """ Multiply all tensor row matrices"""
+    
     arrays = np.split(tensor, tensor.shape[axis], axis = axis)
     multi_mat = functools.reduce(lambda x, y: np.matmul(y, x), arrays)
     

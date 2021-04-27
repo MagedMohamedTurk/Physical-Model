@@ -1,3 +1,9 @@
+
+""" The module contains the stating problem functions
+Running this file will run the 'Testing Unit` to test functions"""
+
+
+# Import modules
 import numpy as np 
 from scipy.linalg import expm
 import tools
@@ -6,15 +12,22 @@ import tools
 
 
 
+
+
+
+# Define functions
+
 def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z):
     """ Calculate U
     theta_k = theta element
     wj = w element
     dt = time interval
-    OMEGA_x, OMEGA_y, OMEGA_z = ..................... """
+    OMEGA_x, OMEGA_y, OMEGA_z : 3x3 matrices """
+
+    #Broadcast zero matrix
     U = np.zeros((3,3))
     
-    
+    # Using Scipy expm to do matrix exponential (critical time function!)
     U = expm(dt * ( wj * OMEGA_z +
                             np.cos(theta_k) * OMEGA_x +
                             np.sin(theta_k) * OMEGA_y
@@ -22,6 +35,10 @@ def get_U(theta_k, wj, dt, OMEGA_x, OMEGA_y,OMEGA_z):
                     )
 
     return U
+
+"""Vectorizing U to elemenate for-loops which slow down Numpy module
+This will be used to create tensor (N,n,3,3)
+that gather all the U values for every w and every theat"""
 
 vector_U = np.vectorize(get_U, signature= '(),(),(),(n,n),(n,n),(n,n)->(n,n)')
 
@@ -34,6 +51,8 @@ vector_U = np.vectorize(get_U, signature= '(),(),(),(n,n),(n,n),(n,n)->(n,n)')
 
 
 
+""" This function is for expermenting here, the function is recalculate in the solver.py module
+from the tensor. The point to save time not to call the U values more than once for calculating J once and another for calculating X,Y"""
 
 def get_J(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     """ Calculate J """

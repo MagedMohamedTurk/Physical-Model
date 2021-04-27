@@ -1,3 +1,9 @@
+""" Solver module has the solvers possible for the problem
+Running this file will run the 'Testing Unit` to test functions"""
+
+
+# Importing modules
+
 import numpy as np 
 from objective_function import get_J, get_U, vector_U
 import time
@@ -6,15 +12,20 @@ import tools
 
 
 
+# Define Functions
+
 
 def get_X(tensor_U, k, X0):
-    """ Calculate X, Y
+    """ Calculate X(k-1)
+    tensor_U is the tensor (N,n,3,3) we calculate from vector_U function
+    X0 : intial condition
     k: index for theta """
+
     if k !=0:
-        tensor_U_X = tensor_U[:, k-1::-1, :, :]
-        X =  tools.np_multi_matmul(tensor_U_X, axis=1) @ X0 # slice tesnor U from 0 to k-1
+        tensor_U_X = tensor_U[:, k-1::-1, :, :] # slice tesnor U from 0 to k-1
+        X =  tools.np_multi_matmul(tensor_U_X, axis=1) @ X0 
     else:
-        X = X0
+        X = X0 # for theat[0]
     return X
 
 
@@ -22,13 +33,16 @@ def get_X(tensor_U, k, X0):
 
 
 def get_Y(tensor_U, k, Yt):
-    """ Calculate X, Y 
-    k: index for theta"""
+    """ Calculate Y(k+1)
+    tensor_U is the tensor (N,n,3,3) we calculate from vector_U function
+    Yt : Target condition
+    k: index for theta """
+
     if k+1 != tensor_U.shape[1]:
-        tensor_U_Y = tensor_U[:, -1:k:-1,:,:]
-        Y = Yt @ tools.np_multi_matmul(tensor_U_Y, axis=1) # slice tesnor U from 0 to k-1
+        tensor_U_Y = tensor_U[:, -1:k:-1,:,:] # slice tesnor U from n to k+1
+        Y = Yt @ tools.np_multi_matmul(tensor_U_Y, axis=1) 
     else:
-        Y = Yt
+        Y = Yt # for theta[n]
     return Y
 
 
@@ -37,7 +51,12 @@ def get_Y(tensor_U, k, Yt):
 
 
 def get_e_k(tensor_U, k, Yt, X0):
-    """ Calculate e """
+    """ Calculate e
+    Cross product of X,Y summation over w 
+    tensor_U is the tensor (N,n,3,3) we calculate from vector_U function
+    X0 : Intial condition
+    Yt : Target condition
+    k: index for theta"""
 
     X_k = get_X(tensor_U = tensor_U, k= k, X0= X0)
     Y_k = get_Y(tensor_U = tensor_U, k= k, Yt= Yt)
@@ -48,12 +67,18 @@ def get_e_k(tensor_U, k, Yt, X0):
 
 
 def update_theta (tensor_U, theta, Yt, X0):
-    """ update theta """
-    theta_updated = np.zeros(theta.shape)
+    """ update theta 
+    tensor_U is the tensor (N,n,3,3) we calculate from vector_U function
+    X0 : Intial condition
+    Yt : Target condition
+    theta: Phase angles"""
+
+    theta_updated = np.zeros(theta.shape) # Broadcast empty matrix
+
     for count in range(len(theta)):
-        e= get_e_k(tensor_U = tensor_U, k= count, Yt= Yt, X0= X0)
-        np.seterr(divide='ignore')
-        theta_updated[count] = np.arctan (e[0,1] / e[0,0]) 
+        e= get_e_k(tensor_U = tensor_U, k= count, Yt= Yt, X0= X0) # Get e for every theta
+        np.seterr(divide='ignore') # Ignore intial divide by zero erro
+        theta_updated[count] = np.arctan (e[0,1] / e[0,0]) # calculate updated theta
     return theta_updated
 
 
@@ -64,17 +89,12 @@ def update_theta (tensor_U, theta, Yt, X0):
 def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
     """ Solving the model
     theta = list(n) of theta values
-    w = list(j) of wj
-    N = number of piece-wise elements over time T
+    w = random frequencies
+    N = Number random frequencies wj over [B, -B]
     dt = time interval
-    OMEGA_x, OMEGA_y, OMEGA_z = .....................
+    OMEGA_x, OMEGA_y, OMEGA_z: Intial conditions 3x3 matrices
     """
     
-
-    
-
-    theta = intial_theta
-
     tensor_U = vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
     J = sum(Yt @ tools.np_multi_matmul(tensor_U, axis=1) @ X0) / N
     print('Trial #0: J=', J)
@@ -83,7 +103,7 @@ def standard_solver(theta, w, N, dt, OMEGA_x, OMEGA_y, OMEGA_z, X0, Yt):
         start_time = time.time()
         theta = update_theta(tensor_U, theta,  Yt= Yt, X0= X0)
         tensor_U = vector_U(theta_k =theta, wj = w, dt = dt, OMEGA_x = OMEGA_x, OMEGA_y = OMEGA_y, OMEGA_z = OMEGA_z)
-        J = sum(Yt @ tools.np_multi_matmul(tensor_U, axis=1) @ X0) / N
+        J = sum(Yt @ tools.np_multi_matmul(tensor_U, axis= 1) @ X0) / N
         iter_n += 1
         print('Trial #',iter_n,': J=', J,'          in ', round(time.time()-start_time, 2), 'seconds\n')
 
