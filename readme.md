@@ -2,7 +2,7 @@
 The script is trying to solve Bloch equations as described in the pdf attached. 
 # Equations:
 The objective is maximize function `J`:  
-$$J = \frac{1}{N} \sum_{j} Y^T_{n+1} U_{n}(w_{j}, \theta_{n}) ... U_{k}(w_{j}, \theta_{k})...U_{1}(w_{j}, \theta_{1}) X_{0}-> equ(3)$$
+![eq3](https://www.bruot.org/tex2img/equations/TXkhgjwFoBLFeDG65yHG2Ixf6nEyUZ6FAF8xrAG96zhf/)
 Where $U_{k}(w, \theta_{k})$ is calculated from :  
 $$U_{k}(w, \theta_{k}) = exp(\delta t(\omega \Omega_{z} + cos(\theta) \Omega_{x} + sin(\theta) \Omega_{y})) ->equ (2)$$
 
