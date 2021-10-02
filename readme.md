@@ -2,7 +2,7 @@
 The script is trying to solve Bloch equations as described in the pdf attached. 
 # Equations:
 The objective is maximize function `J`:  
-![eq3](https://www.bruot.org/tex2img/equations/TXkhgjwFoBLFeDG65yHG2Ixf6nEyUZ6FAF8xrAG96zhf/)
+![eq3](https://www.bruot.org/tex2img/media/TXkhgjwFoBLFeDG65yHG2Ixf6nEyUZ6FAF8xrAG96zhf/tex2img_equation.png)
 Where $U_{k}(w, \theta_{k})$ is calculated from :  
 $$U_{k}(w, \theta_{k}) = exp(\delta t(\omega \Omega_{z} + cos(\theta) \Omega_{x} + sin(\theta) \Omega_{y})) ->equ (2)$$
 
