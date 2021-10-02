@@ -40,7 +40,7 @@ The optimization algorithm is as follows:
 The method was slow and iteration time is over 50 seconds for trial.  
 Another approach was tried in the `Master branch`  
 1. Assume θi = 0 (from θ1 to θn)
-2. Calculate a tensor with (N,n,3,3) dimensions where N: number of random $\omega$ and n is the number of selected $\theta$.
+2. Calculate a tensor with (N,n,3,3) dimensions where N: number of random ω and n is the number of selected θ.
 3. Calculate Y, X, and e from the tensor slicing method.
 4. Updating θ and recalculate.
 This approach reduced the time significantly to less than 3 seconds per trial.
