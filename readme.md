@@ -25,7 +25,7 @@ $X,Y$ is caluclated from equation 4:
 $$
 \begin{equation}
 \tag{4}
-\displaystyle Y_{k+1}^T = Y_{n+1}^T U_n\left(\omega_j, \theta_n\right) \cdots U_{k+1}\left(\omega_j, \theta_{k+1}\right).
+\displaystyle Y_{k+1}^T = Y_{n+1}^T U_n\left(\omega_j, \theta_n\right) \cdots U_{k+1}\left(\omega_j, \theta_{k+1}\right),
 \end{equation}
 $$
 
@@ -37,21 +37,21 @@ $$
 $$
 
 
-calculating $e$ from equation 8:  
+Then, we can calculate $e$ from equation 8:  
 
 $$
 \begin{equation}
 \tag{8}
-\displaystyle e = \sum_j X_{k-1} \times Y_{k+1}.
+\displaystyle e = \sum_j X_{k-1} \times Y_{k+1},
 \end{equation}
 $$
 
-Where $X$ refers to $cross\ product$.
+where $X$ refers to $cross\ product$.
 
 Updating $\theta$ from equ:
 
 $$
-\displaystyle tan\left(\theta\right) := \frac{e_2}{e_1}.
+\displaystyle tan\left(\theta\right) := \frac{e_2}{e_1},
 $$
 
   
@@ -75,7 +75,7 @@ The optimization algorithm is as follows:
 >This method is implemented in git branch `approach A`  
 The method was slow and iteration time is over 50 seconds for trial.  
 Another approach was tried in the `Master branch`  
-1. Assume $θ_i = 0$ (from $θ_1$ to $θ_n$)
+1. Assume $θ_i = 0$ (from $θ_1$ to $θ_n$).
 2. Calculate a tensor with `(N,n,3,3)` dimensions where `N`: number of random $\omega$ and `n` is the number of selected $\theta$.
 3. Calculate Y, X, and e from the tensor slicing method.
 4. Updating $\theta$ and recalculate.
